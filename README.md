@@ -1,9 +1,9 @@
 # 游戏规则：
-你要运用智慧帮助3个牧师（方块）和3个魔鬼（圆球）渡河。
-船最多可以载2名游戏角色。
-船上有游戏角色时，你才可以点击这个船，让船移动到对岸。
-当有一侧岸的魔鬼数多余牧师数时（包括船上的魔鬼和牧师），魔鬼就会失去控制，吃掉牧师（如果这一侧没有牧师则不会失败），游戏失败。
-当所有游戏角色都上到对岸时，游戏胜利。
+* 你要运用智慧帮助3个牧师（方块）和3个魔鬼（圆球）渡河。
+* 船最多可以载2名游戏角色。
+* 船上有游戏角色时，你才可以点击这个船，让船移动到对岸。
+* 当有一侧岸的魔鬼数多余牧师数时（包括船上的魔鬼和牧师），魔鬼就会失去控制，吃掉牧师（如果这一侧没有牧师则不会失败），游戏失败。
+* 当所有游戏角色都上到对岸时，游戏胜利。
 ****
 # 项目资源
 https://github.com/csr632/Priests-and-devils
@@ -407,20 +407,21 @@ boat.GetOnBoat (characterCtrl);
 ## UserAction
 这个接口实际上使用了门面模式。
 FirstController必须要实现这个接口才能对用户的输入做出反应。
-````
+```
 public interface UserAction {
 	void moveBoat();
 	void characterIsClicked(MyCharacterController characterCtrl);
 	void restart();
 }
-````
+```
 在这个游戏中，对用户输入做出反应，有这三个方法就够了。
 UserAction是如何得到用户的输入的呢？原来，在ClickGUI和UserGUI这两个类中，都保存了一个UserAction的引用。当ClickGUI监测到用户点击GameObject的时候，就会调用这个引用的characterIsClicked方法，这样FirstController就知道哪一个游戏角色被点击了。UserGUI同理，只不过它监测的是“用户点击Restart按钮”的事件。
 
 门面模式的好处：通过一套接口（UserAction）来定义Controller与GUI交互的渠道，这样实现Controller类的程序员只需要实现UserAction接口，他的代码就可以被任何**支持这个接口的GUI类**所使用；实现GUI类的程序员也不需要知道Controller的实现方式，它只需要调用接口中的方法，后面的事情就交给Controller吧！
 ****
-##ClickGUI
+## ClickGUI
 ClickGUI类是用来监测用户点击，并调用SceneController进行响应的。
+
 ```
 public class ClickGUI : MonoBehaviour {
 	UserAction action;
@@ -443,9 +444,10 @@ public class ClickGUI : MonoBehaviour {
 	}
 }
 ```
+
 我们可以看到`UserAction action`实际上是FirstController的对象，它实现了UserAction接口。ClickGUI与FirstController打交道，就是通过UserAction接口的API。ClickGUI不知道这些API是怎么被实现的，但它知道FirstController类一定有这些方法。
 ****
-可以做的扩展：
+# 可以做的扩展：
 * 游戏失败以后不能再响应用户点击的事件，用户只能点击Restart。
 * 增加计时的功能（这应该由SceneController来控制）。
 * 增加暂停/恢复游戏的功能（这应该由Director来控制）。
