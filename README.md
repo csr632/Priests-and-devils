@@ -1,16 +1,13 @@
-#A simple game made with Unity3D
-##游戏规则：
-* 你要运用智慧帮助3个牧师（方块）和3个魔鬼（圆球）渡河。
-* 船最多可以载2名游戏角色。
-* 船上有游戏角色时，你才可以点击这个船，让船移动到对岸。
-* 当有一侧岸的魔鬼数多余牧师数时（包括船上的魔鬼和牧师），魔鬼就会失去控制，吃掉牧师（如果这一侧没有牧师则不会失败），游戏失败。
-* 当所有游戏角色都上到对岸时，游戏胜利。
-
+# 游戏规则：
+你要运用智慧帮助3个牧师（方块）和3个魔鬼（圆球）渡河。
+船最多可以载2名游戏角色。
+船上有游戏角色时，你才可以点击这个船，让船移动到对岸。
+当有一侧岸的魔鬼数多余牧师数时（包括船上的魔鬼和牧师），魔鬼就会失去控制，吃掉牧师（如果这一侧没有牧师则不会失败），游戏失败。
+当所有游戏角色都上到对岸时，游戏胜利。
 ****
-
-##项目资源
+# 项目资源
 https://github.com/csr632/Priests-and-devils
-##游戏截图：
+# 游戏截图：
 ![开始游戏](http://upload-images.jianshu.io/upload_images/4888929-b91221deeb85c0ad.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ![游戏失败](http://upload-images.jianshu.io/upload_images/4888929-f2c28caa984232e5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
@@ -18,13 +15,12 @@ https://github.com/csr632/Priests-and-devils
 ![游戏胜利](http://upload-images.jianshu.io/upload_images/4888929-a35353d419752977.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 ****
-##在Unity中体验
+# 在Unity中体验
 从Github中下载[我的项目](https://github.com/csr632/Priests-and-devils)。
-将我的Asserts文件夹覆盖你的Unity项目中的Asserts文件夹。创建一个空对象Main，将FirstController挂载到这个对象上，就可以运行了！
-> 为了有更好的视角，请将摄像机的Position改成（0，4，-10）。
+将我的Asserts文件夹覆盖你的Unity项目中的Asserts文件夹。在你的Assets窗口中双击“ass”，然后就可以点击运行按钮了！
 
 ****
-##游戏架构
+# 游戏架构
 使用了MVC架构。
 * 场景中的所有GameObject就是Model，它们受到Controller的控制，比如说牧师和魔鬼受到MyCharacterController类的控制，船受到BoatController类的控制，河岸受到CoastController类的控制。
 * View就是UserGUI和ClickGUI，它们展示游戏结果，并提供用户交互的渠道（点击物体和按钮）。
@@ -32,7 +28,7 @@ https://github.com/csr632/Priests-and-devils
 **最高层的Controller是Director类**，一个游戏中只能有一个实例，它控制着场景的创建、切换、销毁、游戏暂停、游戏退出等等最高层次的功能。
 
 ****
-##Director
+## Director
 Director的定义：
 
 	public class Director : System.Object {
@@ -52,7 +48,7 @@ Director是最高层的控制器，运行游戏时始终只有一个实例，它
 Director类使用了单例模式。第一次调用Director.getInstance()时，会创建一个新的Director对象，保存在_instance，此后每次调用getInstance，都回返回_instance。也就是说Director最多只有一个实例。这样，我们在任何Script中的任何地方通过`Director.getInstance()`都能得到同一个Director对象，也就可以获得同一个currentSceneController，这样我们就可以轻易实现类与类之间的通信，比如说我在其他控制器中就可以使用`Director.getInstance().somethingHappen()`来告诉导演某一件事情发生了，导演就可以在`somethingHappen()`方法中做出对应的反应。
 
 ****
-##SceneController接口
+## SceneController接口
 SceneController接口定义：
 
 	public interface SceneController {
@@ -65,7 +61,7 @@ SceneController 是用来干什么的呢？它是导演控制场景控制器的�
 > 在这个游戏中SceneController的定义非常简单，因为这个游戏做得并不完整。我们刚才说过导演可以加载、切换、销毁场景、暂停游戏，所以SceneController 还可以规定`void switchScene()`、`void destroyScene()`、`void pause()`这些方法，供给导演来调用。
 
 ****
-##Moveable
+## Moveable
 Moveable是一个可以挂载在GameObject上的类：
 
 	public class Moveable: MonoBehaviour {
@@ -112,7 +108,7 @@ GameObject挂载上Moveable以后，Controller就可以通过`setDestination()`�
 > 在这里我没有让物体直接移动到目的地dest，因为那样可能会直接穿过河岸物体。我用middle来保存一个中间位置，让物体先移动到middle，再移动到dest，这就实现了一个折线的移动，不会穿越河岸。moving_status记录着目前该物体处于哪种移动状态。
 
 ****
-##MyCharacterController
+## MyCharacterController
 MyCharacterController封装了一个GameObject，表示游戏角色（牧师或恶魔）。
 
 	public class MyCharacterController {
@@ -195,7 +191,7 @@ MyCharacterController封装了一个GameObject，表示游戏角色（牧师或�
 MyCharacterController还定义了一些方法提供给场景控制器来调用，方法名已经能够表明这个方法是做什么的了。
 
 ****
-##BoatController和CoastController
+## BoatController和CoastController
 BoatController和CoastController也类似MyCharacterController，封装了船GameObject和河岸GameObject。实现这两个类的难度主要在于它们是一种“容器”，游戏角色要进入它们的空位中。因此它们要提供`getEmptyPosition()`方法，给出自己的空位，让游戏角色能够移动到合适的位置。
 
 	/*-----------------------------------CoastController------------------------------------------*/
@@ -408,7 +404,7 @@ characterCtrl.getOnBoat (boat);
 boat.GetOnBoat (characterCtrl);
 ```
 ****
-##UserAction
+## UserAction
 这个接口实际上使用了门面模式。
 FirstController必须要实现这个接口才能对用户的输入做出反应。
 ````
@@ -449,11 +445,12 @@ public class ClickGUI : MonoBehaviour {
 ```
 我们可以看到`UserAction action`实际上是FirstController的对象，它实现了UserAction接口。ClickGUI与FirstController打交道，就是通过UserAction接口的API。ClickGUI不知道这些API是怎么被实现的，但它知道FirstController类一定有这些方法。
 ****
-##可以做的扩展：
-1. 游戏失败以后不能再响应用户点击的事件，用户只能点击Restart。
-2. 增加计时的功能（这应该由SceneController来控制）。
-3. 增加暂停/恢复游戏的功能（这应该由Director来控制）。
-4. 在开始游戏之前做一个欢迎界面，与用户进行交互（这就是另一个场景了）。
-5. 让用户可以在游戏中切换到欢迎界面，再切换回游戏界面的时候，游戏状态要和之前一样（场景的切换）。用户可以在游戏中放弃游戏，回到欢迎页面（场景的销毁）。
-6. 让用户能够在欢迎界面指定有几个牧师几个恶魔，然后开始游戏。（运行时决定场景的创建）
-7. 美化游戏对象！
+可以做的扩展：
+* 游戏失败以后不能再响应用户点击的事件，用户只能点击Restart。
+* 增加计时的功能（这应该由SceneController来控制）。
+* 增加暂停/恢复游戏的功能（这应该由Director来控制）。
+* 在开始游戏之前做一个欢迎界面，与用户进行交互（这就是另一个场景了）。
+* 让用户可以在游戏中切换到欢迎界面，再切换回游戏界面的时候，游戏状态要和之前一样（场景的切换）。用户可以在游戏中放弃游戏，回到欢迎页面（场景的销毁）。
+* 让用户能够在欢迎界面指定有几个牧师几个恶魔，然后开始游戏。（运行时决定场景的创建）
+* 增加一种更难的模式，开始3秒以后牧师和恶魔外观相同，玩家需要凭借记忆来操作。
+* 美化游戏对象！
