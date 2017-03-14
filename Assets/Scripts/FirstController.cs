@@ -6,7 +6,6 @@ using Com.Mygame;
 public class FirstController : MonoBehaviour, SceneController, UserAction {
 
 	readonly Vector3 water_pos = new Vector3(0,0.5F,0);
-	readonly Vector3 boat_pos = new Vector3(5,1.25F,0);
 
 
 	UserGUI userGUI;

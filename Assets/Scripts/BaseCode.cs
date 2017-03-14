@@ -233,7 +233,6 @@ namespace Com.Mygame {
 	public class BoatController {
 		readonly GameObject boat;
 		readonly Moveable moveableScript;
-		readonly ClickGUI clickGUI;
 		readonly Vector3 fromPosition = new Vector3 (5, 1, 0);
 		readonly Vector3 toPosition = new Vector3 (-5, 1, 0);
 		readonly Vector3[] from_positions;
@@ -253,7 +252,7 @@ namespace Com.Mygame {
 			boat.name = "boat";
 
 			moveableScript = boat.AddComponent (typeof(Moveable)) as Moveable;
-			clickGUI = boat.AddComponent (typeof(ClickGUI)) as ClickGUI;
+			boat.AddComponent (typeof(ClickGUI));
 		}
 
 
