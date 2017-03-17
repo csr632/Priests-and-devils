@@ -6,6 +6,9 @@
 ![](http://upload-images.jianshu.io/upload_images/4888929-a160fa7eaa208d8b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 ![是不是很恐怖](http://upload-images.jianshu.io/upload_images/4888929-83cc01b94d4aef73.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
+
+你可以下载运行[我的项目](https://github.com/csr632/Priests-and-devils/tree/Improvement1)，将我的项目中的Assets文件夹覆盖你的项目中的Assets文件夹，然后在U3D中双击“ass”，就可以运行了！
+
 ****
 # 地形
 选中一个Terrain（地形）以后，在Inspector中有很多调整地形的工具：
