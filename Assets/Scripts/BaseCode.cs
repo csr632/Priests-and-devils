@@ -87,9 +87,11 @@ namespace Com.Mygame {
 			if (which_character == "priest") {
 				character = Object.Instantiate (Resources.Load ("Perfabs/Priest", typeof(GameObject)), Vector3.zero, Quaternion.identity, null) as GameObject;
 				characterType = 0;
+				character.GetComponent<Renderer>().material.color = Color.white;
 			} else {
 				character = Object.Instantiate (Resources.Load ("Perfabs/Devil", typeof(GameObject)), Vector3.zero, Quaternion.identity, null) as GameObject;
 				characterType = 1;
+				character.GetComponent<Renderer>().material.color = Color.red;
 			}
 			moveableScript = character.AddComponent (typeof(Moveable)) as Moveable;
 
@@ -233,10 +235,13 @@ namespace Com.Mygame {
 	public class BoatController {
 		readonly GameObject boat;
 		readonly Moveable moveableScript;
-		readonly Vector3 fromPosition = new Vector3 (5, 1, 0);
-		readonly Vector3 toPosition = new Vector3 (-5, 1, 0);
+		readonly Vector3 fromPosition = new Vector3 (5, 0.75F, 0);
+		readonly Vector3 toPosition = new Vector3 (-5, 0.75F, 0);
 		readonly Vector3[] from_positions;
 		readonly Vector3[] to_positions;
+
+		GameObject cameraObj;
+		GameObject lightObj;
 
 		// change frequently
 		int to_or_from; // to->-1; from->1
@@ -245,16 +250,48 @@ namespace Com.Mygame {
 		public BoatController() {
 			to_or_from = 1;
 
-			from_positions = new Vector3[] { new Vector3 (4.5F, 1.5F, 0), new Vector3 (5.5F, 1.5F, 0) };
-			to_positions = new Vector3[] { new Vector3 (-5.5F, 1.5F, 0), new Vector3 (-4.5F, 1.5F, 0) };
+			from_positions = new Vector3[] { new Vector3 (4.5F, 1.25F, 0), new Vector3 (5.5F, 1.25F, 0) };
+			to_positions = new Vector3[] { new Vector3 (-5.5F, 1.25F, 0), new Vector3 (-4.5F, 1.25F, 0) };
 
 			boat = Object.Instantiate (Resources.Load ("Perfabs/Boat", typeof(GameObject)), fromPosition, Quaternion.identity, null) as GameObject;
 			boat.name = "boat";
 
 			moveableScript = boat.AddComponent (typeof(Moveable)) as Moveable;
 			boat.AddComponent (typeof(ClickGUI));
+
+			boat.GetComponent<Renderer>().material.color = new Color(0.7569F, 0.6039F, 0.4196F, 1);
+
+			//attachCamera();
+			attachLight();
 		}
 
+		private void attachCamera() {
+			cameraObj = new GameObject("Camera_follow");	// 新建一个空对象叫做Camera_follow
+			cameraObj.transform.parent = boat.transform;	// 先让这个对象成为boat的子对象
+			// 调整一下Camera_follow与boat的相对方位
+			cameraObj.transform.localPosition = new Vector3(0, 7, -8);
+			cameraObj.transform.localRotation = Quaternion.Euler(10, 0, 0);
+
+			cameraObj.AddComponent<Camera>();	// 添加Camera组件，让这个空对象成为一个摄像机
+			Camera cameraComp = cameraObj.GetComponent<Camera>();	// 获取摄像机组件
+			cameraComp.fieldOfView = 40;
+
+			// 将Resources/skybox添加为这个摄像机的天空盒
+			cameraObj.AddComponent<Skybox>().material = Resources.Load("skybox") as Material;
+		}
+
+		private void attachLight() {
+			lightObj = new GameObject("Light_follow");	
+			lightObj.transform.parent = boat.transform;
+			lightObj.transform.localPosition = new Vector3(0, 5, -2);
+			lightObj.transform.localRotation = Quaternion.Euler(60, 0, 0);
+
+			lightObj.AddComponent<Light>();
+			Light lightComp =  lightObj.GetComponent<Light>();
+			lightComp.type = LightType.Spot;		// 调整光源的类型为聚光灯
+			lightComp.intensity = 4;		// 调整光源的强度
+			lightComp.spotAngle = 170;		// 调整光源的照射张角
+		}
 
 		public void Move() {
 			if (to_or_from == -1) {

@@ -5,7 +5,7 @@ using Com.Mygame;
 
 public class FirstController : MonoBehaviour, SceneController, UserAction {
 
-	readonly Vector3 water_pos = new Vector3(0,0.5F,0);
+	//readonly Vector3 water_pos = new Vector3(0,0.5F,0);
 
 
 	UserGUI userGUI;
@@ -24,8 +24,8 @@ public class FirstController : MonoBehaviour, SceneController, UserAction {
 	}
 
 	public void loadResources() {
-		GameObject water = Instantiate (Resources.Load ("Perfabs/Water", typeof(GameObject)), water_pos, Quaternion.identity, null) as GameObject;
-		water.name = "water";
+		//GameObject water = Instantiate (Resources.Load ("Perfabs/Water", typeof(GameObject)), water_pos, Quaternion.identity, null) as GameObject;
+		//water.name = "water";
 
 		fromCoast = new CoastController ("from");
 		toCoast = new CoastController ("to");
