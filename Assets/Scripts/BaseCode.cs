@@ -28,6 +28,7 @@ namespace Com.Mygame {
 	}
 
 	/*-----------------------------------Moveable------------------------------------------*/
+	/* old way to move
 	public class Moveable: MonoBehaviour {
 		
 		readonly float move_speed = 20;
@@ -68,14 +69,15 @@ namespace Com.Mygame {
 			moving_status = 0;
 		}
 	}
-
+	 */
 
 	/*-----------------------------------MyCharacterController------------------------------------------*/
 	public class MyCharacterController {
 		readonly GameObject character;
-		readonly Moveable moveableScript;
+		//readonly Moveable moveableScript;
 		readonly ClickGUI clickGUI;
 		readonly int characterType;	// 0->priest, 1->devil
+		public readonly float movingSpeed = 20;
 
 		// change frequently
 		bool _isOnBoat;
@@ -93,7 +95,7 @@ namespace Com.Mygame {
 				characterType = 1;
 				character.GetComponent<Renderer>().material.color = Color.red;
 			}
-			moveableScript = character.AddComponent (typeof(Moveable)) as Moveable;
+			//moveableScript = character.AddComponent (typeof(Moveable)) as Moveable;
 
 			clickGUI = character.AddComponent (typeof(ClickGUI)) as ClickGUI;
 			clickGUI.setController (this);
@@ -107,9 +109,11 @@ namespace Com.Mygame {
 			character.transform.position = pos;
 		}
 
+		/*
 		public void moveToPosition(Vector3 destination) {
 			moveableScript.setDestination(destination);
 		}
+		*/
 
 		public int getType() {	// 0->priest, 1->devil
 			return characterType;
@@ -140,11 +144,19 @@ namespace Com.Mygame {
 		}
 
 		public void reset() {
-			moveableScript.reset ();
+			// moveableScript.reset ();
 			coastController = (Director.getInstance ().currentSceneController as FirstController).fromCoast;
 			getOnCoast (coastController);
 			setPosition (coastController.getEmptyPosition ());
 			coastController.getOnCoast (this);
+		}
+
+		public Vector3 getPos() {
+			return this.character.transform.position;
+		}
+
+		public GameObject getGameobj() {
+			return this.character;
 		}
 	}
 
@@ -234,11 +246,12 @@ namespace Com.Mygame {
 	/*-----------------------------------BoatController------------------------------------------*/
 	public class BoatController {
 		readonly GameObject boat;
-		readonly Moveable moveableScript;
+		//readonly Moveable moveableScript;
 		readonly Vector3 fromPosition = new Vector3 (5, 0.75F, 0);
 		readonly Vector3 toPosition = new Vector3 (-5, 0.75F, 0);
 		readonly Vector3[] from_positions;
 		readonly Vector3[] to_positions;
+		public readonly float movingSpeed = 20;
 
 		GameObject cameraObj;
 		GameObject lightObj;
@@ -256,12 +269,12 @@ namespace Com.Mygame {
 			boat = Object.Instantiate (Resources.Load ("Perfabs/Boat", typeof(GameObject)), fromPosition, Quaternion.identity, null) as GameObject;
 			boat.name = "boat";
 
-			moveableScript = boat.AddComponent (typeof(Moveable)) as Moveable;
+			//moveableScript = boat.AddComponent (typeof(Moveable)) as Moveable;
 			boat.AddComponent (typeof(ClickGUI));
 
 			boat.GetComponent<Renderer>().material.color = new Color(0.7569F, 0.6039F, 0.4196F, 1);
 
-			//attachCamera();
+			attachCamera();	// add a camera moving with this boat
 			attachLight();
 		}
 
@@ -293,6 +306,7 @@ namespace Com.Mygame {
 			lightComp.spotAngle = 170;		// 调整光源的照射张角
 		}
 
+		/*
 		public void Move() {
 			if (to_or_from == -1) {
 				moveableScript.setDestination(fromPosition);
@@ -302,7 +316,23 @@ namespace Com.Mygame {
 				to_or_from = -1;
 			}
 		}
+		*/
 
+		public Vector3 getDestination() {
+			if (to_or_from == -1) {
+				return fromPosition;
+			} else {
+				return toPosition;
+			}
+		}
+
+		public void move() {
+			if (to_or_from == -1) {
+				to_or_from = 1;
+			} else {
+				to_or_from = -1;
+			}
+		}
 		public int getEmptyIndex() {
 			for (int i = 0; i < passenger.Length; i++) {
 				if (passenger [i] == null) {
@@ -372,10 +402,11 @@ namespace Com.Mygame {
 		}
 
 		public void reset() {
-			moveableScript.reset ();
+			//moveableScript.reset ();
 			if (to_or_from == -1) {
-				Move ();
+				move ();
 			}
+			boat.transform.position = fromPosition;
 			passenger = new MyCharacterController[2];
 		}
 	}
